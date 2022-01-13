@@ -1,0 +1,56 @@
+a) How many orders were shipped by Speedy Express in total?
+
+Speedy Express Shipper ID = 1
+
+SELECT COUNT(OrderID)
+FROM Orders
+WHERE ShipperID = 1
+
+Answer: 54 Orders
+
+
+b) What is the last name of the employee with the most orders?
+
+Orders: OrderID, EmployeeID
+Employees: EmployeeID, LastName
+
+    1) In Orders table, find the employee that had the most orders
+    2) Use the EmployeeID to look in the Employees table
+    3) Retrieve LastName corresponding to EmployeeID in Employees table
+
+SELECT e.LastName, COUNT(o.EmployeeID) as count
+FROM Employees as e
+INNER JOIN Orders as o
+ON o.EmployeeID == e.EmployeeID
+GROUP BY e.LastName
+Order BY count DESC
+LIMIT 1
+
+Answer: Peacock with 40 orders
+
+
+c) What product was ordered the most by customers in Germany?
+
+Products: ProductName, ProductID
+Customers: CustomerID, Country
+Orders: OrderID, CustomerID
+OrderDetails: ProductID, Quantity
+
+    1) Find all OrderID's that were made by customers in Germany
+    2) Using the OrderID from those rows, look into the OrderDetails
+    3) Find the product that has the greatest quantity from Orders made by customers in Germany
+
+SELECT o.CustomerID, o.OrderID, SUM(od.Quantity) as count, p.ProductID , p.ProductName
+FROM Orders as o
+JOIN Customers as c
+ON o.CustomerID = c.CustomerID
+JOIN OrderDetails as od
+ON o.OrderID = od.OrderID
+JOIN Products as p
+ON od.ProductID = p.ProductID
+WHERE c.Country = "Germany"
+GROUP BY p.ProductID
+Order By count DESC
+Limit 1
+
+Answer: The most ordered product by customers in Germany is Boston Crab Meat
